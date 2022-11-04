@@ -198,9 +198,10 @@ def readJoy():
 
 
 bus = can.interface.Bus(bustype='socketcan', channel='can0', bitrate='500000')
+bus.flush_tx_buffer()
 motors = Motors(bus)
 
-period = 0.05
+period = 0.001
 startTime = time.time()
 speeds = [0]*4
 
@@ -213,6 +214,9 @@ tdata = [jX, jY, cwAxis, ccwAxis]
 
 t = Thread(target=readJoy, daemon=True)
 t.start()
+tagetSpeeds = [0]*4
+speeds = [0]*4
+step = 20
 while True:
     #evbuf = jsdev.read(8)
     if not q.empty():
@@ -228,7 +232,20 @@ while True:
             angle = angle - np.pi/4
             angle = round(angle, 1)
             magnitude = 0 if magnitude < 0.7 else magnitude
-            speeds = getMotorSpeeds(magnitude, angle, cwAxis, ccwAxis)
+            targetSpeeds = getMotorSpeeds(magnitude, angle, cwAxis, ccwAxis)
+
+            for i in range(4):
+                if targetSpeeds[i] > 0 and speeds[i] < targetSpeeds[i]:
+                    speeds[i] += step
+                elif targetSpeeds[i] < 0 and speeds[i] > targetSpeeds[i]:
+                    speeds[i] -= step
+                elif targetSpeeds[i] == 0:
+                    if speeds[i] > targetSpeeds[i]:
+                        speeds[i] -= step
+                    elif speeds[i] < targetSpeeds[i]:
+                        speeds[i] += step
+
+
             print(magnitude, angle, speeds)
     except KeyboardInterrupt:
         event.set()
