@@ -142,7 +142,7 @@ def cart2pol(x, y):
     return(rho, phi)
 
 def getMotorSpeeds(mag, angle, cw, ccw):
-    maxspeed = 10000
+    maxspeed = 6000
     maxrotspeed = 5000
     speeds = [0]*4
     speeds[0] = speeds[2] = int(maxspeed*np.sin(angle)*mag)
@@ -151,9 +151,9 @@ def getMotorSpeeds(mag, angle, cw, ccw):
     rot = int((cw-ccw) * maxrotspeed)
 
     speeds[0] += rot
-    speeds[1] += rot
+    speeds[1] -= rot
     speeds[2] -= rot
-    speeds[3] -= rot
+    speeds[3] += rot
     return speeds
 
 event = Event()
@@ -228,11 +228,11 @@ while True:
             motors.set_speeds(speeds)
             startTime = time.time()
             magnitude, angle  = cart2pol(jX, jY)
-            #angle = angle + np.pi/4 + np.pi/2
-            angle = angle - np.pi/4
+            angle = angle + 5*np.pi/4
             angle = round(angle, 1)
             magnitude = 0 if magnitude < 0.7 else magnitude
             targetSpeeds = getMotorSpeeds(magnitude, angle, cwAxis, ccwAxis)
+            
 
             for i in range(4):
                 if targetSpeeds[i] > 0 and speeds[i] < targetSpeeds[i]:
