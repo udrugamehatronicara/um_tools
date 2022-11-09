@@ -11,6 +11,7 @@ from threading import Thread, Event
 class JoyStick:
     def __init__(self):
         self.last_data = [0]*4
+        self.device = "/dev/input/by-path/platform-3610000.xhci-usb-0:2:1.0-joystick"
         print('Available devices:')
 
         for fn in os.listdir('/dev/input'):
@@ -97,7 +98,8 @@ class JoyStick:
         self.button_map = []
 
         # Open the joystick device.
-        fn = '/dev/input/js0'
+        #fn = '/dev/input/js0'
+        fn = self.device
         print('Opening %s...' % fn)
         self.jsdev = open(fn, 'rb')
 
@@ -150,6 +152,7 @@ class JoyStick:
                 break
             if evbuf:
                 _, value, type, number = struct.unpack('IhBB', evbuf)
+                #print(value, number)
 
                 if type & 0x80:
                     print("(initial)", end="")
@@ -165,6 +168,7 @@ class JoyStick:
 
                 if type & 0x02:
                     axis = self.axis_map[number]
+                    #print(axis)
                     if axis:
                         fvalue = value / 32767.0
                         self.axis_states[axis] = fvalue
@@ -173,9 +177,9 @@ class JoyStick:
                             jX = fvalue
                         elif axis == "y":
                             jY = -fvalue
-                        elif axis == "gas":
+                        elif axis == "z":
                             cwAxis = (fvalue+1)/2
-                        elif axis == "brake":
+                        elif axis == "rz":
                             ccwAxis = (fvalue+1)/2
                 self.tdata = [jX, jY, cwAxis, ccwAxis]
                 #print(self.tdata)
