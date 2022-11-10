@@ -1,4 +1,5 @@
 import time
+import numpy as np
 import can
 from JoyStick import JoyStick
 from IKMotors import IKMotors
@@ -20,7 +21,7 @@ tdata = [jX, jY, cwAxis, ccwAxis]
 
 tagetSpeeds = [0]*4
 speeds = [0]*4
-step = 50
+step = 60
 js = JoyStick()
 t, q = js.start()
 maxspeed = 5000
@@ -56,8 +57,9 @@ while True:
                         speeds[i] -= step
                     elif speeds[i] < targetSpeeds[i]:
                         speeds[i] += step
-            ik.set_speeds(speeds)
-            print(speeds)
+            ik.set_speeds([int(s) for s in targetSpeeds])
+            #ik.set_speeds(speeds)
+            print(targetSpeeds, jX, jY, rot)
 
             
     except KeyboardInterrupt:

@@ -31,8 +31,8 @@ if __name__ == "__main__":
     DO_SINGLE = False
     bus = can.interface.Bus(bustype='socketcan', channel='can0', bitrate='500000')
     motors = Motors(bus)
-    sleepTime = 0.05
-    step = 2000
+    sleepTime = 0.01
+    step = 1
     maxspeed = 50000
     
     if DO_SINGLE:

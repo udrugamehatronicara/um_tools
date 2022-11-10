@@ -22,7 +22,6 @@ class IKMotors:
                 ]) * (1/R)
 
     def set_speeds(self, speeds):
-        self.last_speeds = speeds
 
         msgs = []
         for s, addr in zip(speeds, self.motor_addr):
