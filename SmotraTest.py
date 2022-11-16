@@ -8,7 +8,7 @@ bus = can.interface.Bus(bustype='socketcan', channel='can0', bitrate='500000')
 bus.flush_tx_buffer()
 ik = IKMotors(bus)
 
-period = 0.01
+period = 0.001
 startTime = time.time()
 speeds = [0]*4
 
@@ -21,7 +21,7 @@ tdata = [jX, jY, cwAxis, ccwAxis]
 
 tagetSpeeds = [0]*4
 speeds = [0]*4
-step = 60
+step = 20
 js = JoyStick()
 t, q = js.start()
 maxspeed = 5000
@@ -57,9 +57,9 @@ while True:
                         speeds[i] -= step
                     elif speeds[i] < targetSpeeds[i]:
                         speeds[i] += step
-            ik.set_speeds([int(s) for s in targetSpeeds])
-            #ik.set_speeds(speeds)
-            print(targetSpeeds, jX, jY, rot)
+            #ik.set_speeds([int(s) for s in targetSpeeds])
+            ik.set_speeds(speeds)
+            print(speeds, jX, jY, rot)
 
             
     except KeyboardInterrupt:
