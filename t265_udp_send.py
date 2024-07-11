@@ -4,7 +4,7 @@ import pyrealsense2.pyrealsense2 as rs
 
 UDP_IP = "10.43.0.1"
 UDP_PORT = 5005
-MESSAGE = [0]*6
+MESSAGE = [0]*10
 
 sock = socket.socket(socket.AF_INET, # Internet
                      socket.SOCK_DGRAM) # UDP
@@ -42,10 +42,13 @@ while True:
                 pose_data.rotation.y,
                 pose_data.rotation.z,
                 pose_data.rotation.w,
+                pose_data.velocity.x,
+                pose_data.velocity.y,
+                pose_data.velocity.z,
         ]).tobytes()
         sock.sendto(MESSAGE, (UDP_IP, UDP_PORT))
         #print("Position: ", pose_data.translation)
         #print("Rotation: ", pose_data.rotation)
-#        print("Velocity: ", pose_data.velocity)
+        #print("Velocity: ", pose_data.velocity)
 
 
